@@ -4,6 +4,8 @@ import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,7 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.io.IOException;
 import java.util.Properties;
 
 @Configuration
@@ -38,22 +41,27 @@ public class AppConfig {
     }
 
     @Bean
-    public LocalSessionFactoryBean sessionFactory() {
+    public SessionFactory sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan("org.example.weatherapp");
         sessionFactory.setHibernateProperties(hibernateProperties());
 
-        return sessionFactory;
+        try {
+            sessionFactory.afterPropertiesSet();
+            return sessionFactory.getObject();
+        } catch (IOException e) {
+            throw new BeanInitializationException("Failed to initialize Hibernate SessionFactory", e);
+        }
     }
 
     @Bean
     public HibernateTransactionManager transactionManager() {
-        HibernateTransactionManager txManager = new HibernateTransactionManager();
-        txManager.setSessionFactory(sessionFactory().getObject());
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory());
 
-        return txManager;
+        return transactionManager;
     }
 
     @Bean
@@ -61,7 +69,7 @@ public class AppConfig {
         SpringLiquibase liquibase = new SpringLiquibase();
 
         liquibase.setDataSource(dataSource());
-        liquibase.setChangeLog("classpath:db/changelog/db.changelog-master.xml");
+        liquibase.setChangeLog("classpath:db/changelog/db.changelog-master.yaml");
         liquibase.setDefaultSchema("public");
 
         return liquibase;
