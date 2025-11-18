@@ -12,6 +12,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -24,6 +26,7 @@ import java.util.Properties;
 @ComponentScan(basePackages = {
         "org.example.weatherapp.service",
         "org.example.weatherapp.repository",
+        "org.example.weatherapp.mapper",
         "org.example.weatherapp.config"
 })
 @RequiredArgsConstructor
@@ -34,6 +37,11 @@ public class AppConfig {
     @Bean
     public HttpClient httpClient() {
         return HttpClient.newHttpClient();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
