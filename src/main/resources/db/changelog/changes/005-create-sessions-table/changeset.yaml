@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 005-create-sessions-table
+      author: vladimir_r
+      comment: Создание таблицы сессий авторизаций пользователя
+      changes:
+        - sqlFile:
+            path: db/changelog/changes/005-create-sessions-table/create-sessions-table.sql
