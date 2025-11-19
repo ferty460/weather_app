@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS locations
     name      VARCHAR(128) NOT NULL,
     user_id   BIGINT       NOT NULL,
     latitude  NUMERIC(10, 8),
-    longitude NUMERIC(11, 8)
+    longitude NUMERIC(11, 8),
+
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 COMMENT ON TABLE locations IS 'Таблица для хранения географических локаций пользователей';
