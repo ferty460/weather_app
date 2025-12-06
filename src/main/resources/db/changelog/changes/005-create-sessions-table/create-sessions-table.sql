@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS sessions
 (
-    id         VARCHAR(255) PRIMARY KEY,
+    id         UUID PRIMARY KEY,
     user_id    BIGINT    NOT NULL,
     expires_at TIMESTAMP NOT NULL,
 
