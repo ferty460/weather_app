@@ -27,7 +27,8 @@ import java.util.Properties;
         "org.example.weatherapp.service",
         "org.example.weatherapp.repository",
         "org.example.weatherapp.mapper",
-        "org.example.weatherapp.config"
+        "org.example.weatherapp.config",
+        "org.example.weatherapp.interceptor",
 })
 @RequiredArgsConstructor
 public class AppConfig {
@@ -88,6 +89,7 @@ public class AppConfig {
         properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
         properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
         properties.put("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
+        properties.put("hibernate.highlight_sql", env.getProperty("hibernate.highlight_sql"));
         properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
 
         return properties;
