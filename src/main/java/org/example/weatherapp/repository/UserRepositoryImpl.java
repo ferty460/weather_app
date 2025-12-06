@@ -29,6 +29,19 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public Optional<User> findByLogin(String login) {
+        Session session = sessionFactory.getCurrentSession();
+
+        String hql = "SELECT u FROM User u LEFT JOIN FETCH u.locations WHERE u.login = :login";
+
+        User user = session.createQuery(hql, User.class)
+                .setParameter("login", login)
+                .uniqueResult();
+
+        return Optional.ofNullable(user);
+    }
+
+    @Override
     public List<User> findAll() {
         Session session = sessionFactory.getCurrentSession();
         String hql = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.locations";
