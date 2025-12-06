@@ -3,7 +3,7 @@ package org.example.weatherapp.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.example.weatherapp.dto.LocationDto;
+import org.example.weatherapp.dto.response.LocationResponse;
 import org.example.weatherapp.dto.WeatherDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,21 +35,21 @@ public class OpenWeatherApiService {
 
     // todo: name validation
     // todo: custom exception
-    @Transactional
-    public List<LocationDto> searchLocationsByName(String name) {
+    @Transactional(readOnly = true)
+    public List<LocationResponse> searchLocationsByName(String name) {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String url = FIND_BY_NAME_URL.formatted(encodedName, LOCATIONS_LIMIT, apiKey);
 
         try {
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).build();
             String jsonResponse = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            List<LocationDto> locationDtoList = mapper.readValue(jsonResponse, new TypeReference<>() {});
+            List<LocationResponse> locationResponseList = mapper.readValue(jsonResponse, new TypeReference<>() {});
 
-            if (locationDtoList.isEmpty()) {
+            if (locationResponseList.isEmpty()) {
                 throw new RuntimeException("The location by name could not be found by name: " + name);
             }
 
-            return locationDtoList;
+            return locationResponseList;
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("URI to find locations with name " + name + " failed", e);
         } catch (IOException | InterruptedException e) {
@@ -57,7 +57,7 @@ public class OpenWeatherApiService {
         }
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public WeatherDto getWeatherByCoordinates(BigDecimal lat, BigDecimal lon) {
         String url = FIND_BY_COORDS_URL.formatted(lat, lon, apiKey);
 

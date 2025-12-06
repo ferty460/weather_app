@@ -26,6 +26,13 @@ public class SessionService {
                 .orElseThrow(() -> new RuntimeException("Session with id " + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
+    public User getUserBySessionId(String sessionId) {
+        Session session = getById(sessionId);
+
+        return session.getUser();
+    }
+
     @Transactional
     public Session create(UserDto userDto) {
         User user = userService.getByLogin(userDto.login());

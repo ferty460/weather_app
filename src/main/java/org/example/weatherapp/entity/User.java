@@ -25,4 +25,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Location> locations;
 
+    public void addLocation(Location location) {
+        this.locations.add(location);
+    }
+
 }
