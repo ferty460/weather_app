@@ -5,8 +5,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.entity.Session;
-import org.example.weatherapp.service.AuthService;
 import org.example.weatherapp.service.SessionService;
+import org.example.weatherapp.util.WebUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -19,11 +19,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     private final SessionService sessionService;
 
     @Override
-    public boolean preHandle(
-            HttpServletRequest request, HttpServletResponse response, Object handler
-    ) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String path = request.getRequestURI();
-
         if (path.startsWith("/auth")) {
             return true;
         }
@@ -31,15 +28,14 @@ public class AuthInterceptor implements HandlerInterceptor {
         Cookie[] cookies = getCookies(request, response);
         if (cookies == null) return false;
 
-        String sessionId = getSessionId(cookies);
+        String sessionId = WebUtil.getSessionIdFromCookies(cookies);
         if (sessionId == null) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
 
         Session session = sessionService.getById(sessionId);
-
-        if (session == null || session.getExpiresAt().isBefore(LocalDateTime.now())) {
+        if (session.getExpiresAt().isBefore(LocalDateTime.now())) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
@@ -56,16 +52,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             return null;
         }
         return cookies;
-    }
-
-    private String getSessionId(Cookie[] cookies) {
-        String sessionId = null;
-        for (Cookie cookie : cookies) {
-            if (AuthService.SESSION_COOKIE_NAME.equals(cookie.getName())) {
-                sessionId = cookie.getValue();
-            }
-        }
-        return sessionId;
     }
 
 }
