@@ -1,7 +1,7 @@
 package org.example.weatherapp.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.example.weatherapp.dto.LocationDto;
+import org.example.weatherapp.dto.response.LocationResponse;
 import org.example.weatherapp.dto.WeatherDto;
 import org.example.weatherapp.service.OpenWeatherApiService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +17,8 @@ public class OpenWeatherApiController {
 
     private final OpenWeatherApiService apiService;
 
-    @GetMapping("/locations")
-    public List<LocationDto> searchLocations(@RequestParam("query") String location) {
+    @GetMapping("/location")
+    public List<LocationResponse> searchLocations(@RequestParam("query") String location) {
         return apiService.searchLocationsByName(location);
     }
 

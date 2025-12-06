@@ -40,8 +40,6 @@ public class AuthInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        request.setAttribute("userId", session.getUser().getId());
-
         return true;
     }
 
