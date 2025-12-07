@@ -44,4 +44,11 @@ public class LocationService {
         user.addLocation(savedLocation);
     }
 
+    @Transactional
+    public void delete(Long id) {
+        Location location = locationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Location with id " + id + " not found"));
+        locationRepository.delete(location);
+    }
+
 }
