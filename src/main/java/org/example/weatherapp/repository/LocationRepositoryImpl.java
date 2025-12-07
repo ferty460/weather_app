@@ -6,7 +6,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,27 +16,8 @@ public class LocationRepositoryImpl implements LocationRepository {
     private final SessionFactory sessionFactory;
 
     @Override
-    public Optional<Location> findByName(String name) {
-        Session session = sessionFactory.getCurrentSession();
-
-        String hql = "SELECT l FROM Location l WHERE l.name = :name";
-
-        Location location = session.createQuery(hql, Location.class)
-                .setParameter("name", name)
-                .uniqueResult();
-
-        return Optional.ofNullable(location);
-    }
-
-    @Override
-    public Optional<Location> findByCoordinates(BigDecimal latitude, BigDecimal longitude) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<Location> findById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-
         String hql = "SELECT l FROM Location l WHERE l.id = :id";
 
         Location location = session.createQuery(hql, Location.class)
@@ -45,6 +25,16 @@ public class LocationRepositoryImpl implements LocationRepository {
                 .uniqueResult();
 
         return Optional.ofNullable(location);
+    }
+
+    @Override
+    public List<Location> findAllByUserId(Long userId) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "SELECT DISTINCT l FROM Location l LEFT JOIN FETCH l.user u WHERE u.id = :userId";
+
+        return session.createQuery(hql, Location.class)
+                .setParameter("userId", userId)
+                .getResultList();
     }
 
     @Override
