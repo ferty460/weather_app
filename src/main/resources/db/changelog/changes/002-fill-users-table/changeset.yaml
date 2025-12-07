@@ -1,8 +1,0 @@
-databaseChangeLog:
-  - changeSet:
-      id: 002-fill-users-table
-      author: vladimir_r
-      comment: Заполнение таблицы пользователей тестовыми данными
-      changes:
-        - sqlFile:
-            path: db/changelog/changes/002-fill-users-table/fill-users-table.sql
