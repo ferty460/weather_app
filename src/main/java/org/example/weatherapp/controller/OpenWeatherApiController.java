@@ -17,7 +17,7 @@ public class OpenWeatherApiController {
 
     private final OpenWeatherApiService apiService;
 
-    @GetMapping("/location")
+    @GetMapping("/locations/search")
     public List<LocationResponse> searchLocations(@RequestParam("query") String location) {
         return apiService.searchLocationsByName(location);
     }

@@ -2,23 +2,28 @@ package org.example.weatherapp.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.example.weatherapp.dto.WeatherDto;
 import org.example.weatherapp.dto.request.LocationRequest;
 import org.example.weatherapp.service.LocationService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/location")
+@RequestMapping("/locations")
 @RequiredArgsConstructor
 public class LocationController {
 
     private final LocationService locationService;
 
+    @GetMapping
+    public List<WeatherDto> getLocations(HttpServletRequest request) {
+        return locationService.getUserLocationsWithWeather(request);
+    }
+
     @PostMapping
-    public void save(@RequestBody LocationRequest locationRequest, HttpServletRequest request) {
-        locationService.save(locationRequest, request);
+    public void addLocation(@RequestBody LocationRequest locationRequest, HttpServletRequest request) {
+        locationService.add(locationRequest, request);
     }
 
 }
