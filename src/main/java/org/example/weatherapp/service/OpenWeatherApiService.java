@@ -33,8 +33,6 @@ public class OpenWeatherApiService {
     private final ObjectMapper mapper;
     private final HttpClient httpClient;
 
-    // todo: name validation
-    // todo: custom exception
     @Transactional(readOnly = true)
     public List<LocationResponse> searchLocationsByName(String name) {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
@@ -58,7 +56,7 @@ public class OpenWeatherApiService {
     }
 
     @Transactional(readOnly = true)
-    public WeatherResponse getWeatherByCoordinates(BigDecimal lat, BigDecimal lon) {
+    public WeatherResponse searchWeatherByCoordinates(BigDecimal lat, BigDecimal lon) {
         String url = FIND_BY_COORDS_URL.formatted(lat, lon, apiKey);
 
         try {

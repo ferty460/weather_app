@@ -1,5 +1,6 @@
 package org.example.weatherapp.controller;
 
+import jakarta.validation.constraints.*;
 import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.response.LocationResponse;
 import org.example.weatherapp.dto.response.WeatherResponse;
@@ -18,16 +19,16 @@ public class OpenWeatherApiController {
     private final OpenWeatherApiService apiService;
 
     @GetMapping("/locations/search")
-    public List<LocationResponse> searchLocations(@RequestParam("query") String location) {
+    public List<LocationResponse> searchLocations(@RequestParam("query") @NotBlank String location) {
         return apiService.searchLocationsByName(location);
     }
 
     @GetMapping("/weather")
     public WeatherResponse searchWeather(
-            @RequestParam("lat") BigDecimal latitude,
-            @RequestParam("lon") BigDecimal longitude
+            @RequestParam("lat") @NotNull @DecimalMin("-90.0") @DecimalMax("90") BigDecimal latitude,
+            @RequestParam("lon") @NotNull @DecimalMin("-180") @DecimalMax("180") BigDecimal longitude
     ) {
-        return apiService.getWeatherByCoordinates(latitude, longitude);
+        return apiService.searchWeatherByCoordinates(latitude, longitude);
     }
 
 }

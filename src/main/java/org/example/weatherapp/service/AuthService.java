@@ -4,7 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.example.weatherapp.dto.UserDto;
+import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.entity.Session;
 import org.example.weatherapp.entity.User;
 import org.example.weatherapp.mapper.UserMapper;
@@ -23,24 +23,27 @@ public class AuthService {
     private final SessionService sessionService;
     private final PasswordEncoder passwordEncoder;
 
-    // todo: validation
     @Transactional
-    public UserDto register(UserDto userDto) {
-        User user = userMapper.toEntity(userDto);
-        user.setPassword(passwordEncoder.encode(userDto.password()));
+    public void register(UserRequest userRequest) {
+        if (userService.existsByLogin(userRequest.login())) {
+            throw new IllegalArgumentException("User with login " + userRequest.login() + " already exists");
+        }
 
-        return userService.create(user);
+        User user = userMapper.toEntity(userRequest);
+        user.setPassword(passwordEncoder.encode(userRequest.password()));
+
+        userService.create(user);
     }
 
     @Transactional
-    public void login(UserDto userDto, HttpServletResponse response) {
-        User user = userService.getByLogin(userDto.login());
+    public void login(UserRequest userRequest, HttpServletResponse response) {
+        User user = userService.getByLogin(userRequest.login());
 
-        if (!BCrypt.checkpw(userDto.password(), user.getPassword())) {
+        if (!BCrypt.checkpw(userRequest.password(), user.getPassword())) {
             throw new RuntimeException("Wrong password");
         }
 
-        Session session = sessionService.create(userDto);
+        Session session = sessionService.create(userRequest);
         WebUtil.setSessionCookie(session.getId(), response);
     }
 

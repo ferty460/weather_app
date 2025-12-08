@@ -25,8 +25,7 @@ public class LocationService {
 
     @Transactional(readOnly = true)
     public List<WeatherResponse> getUserLocationsWithWeather(HttpServletRequest request) {
-        String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
-        User user = sessionService.getById(sessionId).getUser();
+        User user = getUserFromRequest(request);
         List<Location> locations = locationRepository.findAllByUserId(user.getId());
 
         return locations.stream()
@@ -36,8 +35,7 @@ public class LocationService {
 
     @Transactional
     public void addToUserList(LocationRequest locationRequest, HttpServletRequest request) {
-        String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
-        User user = sessionService.getById(sessionId).getUser();
+        User user = getUserFromRequest(request);
         Location location = locationMapper.toEntity(locationRequest, user);
 
         Location savedLocation = locationRepository.save(location);
@@ -46,8 +44,7 @@ public class LocationService {
 
     @Transactional
     public void deleteFromUserList(Long id, HttpServletRequest request) {
-        String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
-        User user = sessionService.getById(sessionId).getUser();
+        User user = getUserFromRequest(request);
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Location with id " + id + " not found"));
 
@@ -58,8 +55,13 @@ public class LocationService {
         locationRepository.delete(location);
     }
 
+    private User getUserFromRequest(HttpServletRequest request) {
+        String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
+        return sessionService.getById(sessionId).getUser();
+    }
+
     private WeatherResponse mapToWeatherWithLocationId(Location loc) {
-        WeatherResponse weather = apiService.getWeatherByCoordinates(loc.getLatitude(), loc.getLongitude());
+        WeatherResponse weather = apiService.searchWeatherByCoordinates(loc.getLatitude(), loc.getLongitude());
         return new WeatherResponse(loc.getId(), weather.name(), weather.weather(), weather.main());
     }
 

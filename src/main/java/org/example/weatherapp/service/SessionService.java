@@ -1,7 +1,7 @@
 package org.example.weatherapp.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.weatherapp.dto.UserDto;
+import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.entity.Session;
 import org.example.weatherapp.entity.User;
 import org.example.weatherapp.repository.SessionRepository;
@@ -27,8 +27,8 @@ public class SessionService {
     }
 
     @Transactional
-    public Session create(UserDto userDto) {
-        User user = userService.getByLogin(userDto.login());
+    public Session create(UserRequest userRequest) {
+        User user = userService.getByLogin(userRequest.login());
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(SESSION_EXPIRATION_HOURS);
 
         Session session = new Session();
