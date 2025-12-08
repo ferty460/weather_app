@@ -35,7 +35,7 @@ public class LocationService {
     }
 
     @Transactional
-    public void add(LocationRequest locationRequest, HttpServletRequest request) {
+    public void addToUserList(LocationRequest locationRequest, HttpServletRequest request) {
         String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
         User user = sessionService.getById(sessionId).getUser();
         Location location = locationMapper.toEntity(locationRequest, user);
@@ -45,9 +45,16 @@ public class LocationService {
     }
 
     @Transactional
-    public void delete(Long id) {
+    public void deleteFromUserList(Long id, HttpServletRequest request) {
+        String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
+        User user = sessionService.getById(sessionId).getUser();
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Location with id " + id + " not found"));
+
+        if (!user.getLocations().contains(location)) {
+            throw new IllegalArgumentException("Location with id " + id + " not in locations list");
+        }
+
         locationRepository.delete(location);
     }
 

@@ -23,12 +23,12 @@ public class LocationController {
 
     @PostMapping
     public void addLocation(@RequestBody LocationRequest locationRequest, HttpServletRequest request) {
-        locationService.add(locationRequest, request);
+        locationService.addToUserList(locationRequest, request);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteLocation(@PathVariable("id") Long id) {
-        locationService.delete(id);
+    public void deleteLocation(@PathVariable("id") Long id, HttpServletRequest request) {
+        locationService.deleteFromUserList(id, request);
     }
 
 }
