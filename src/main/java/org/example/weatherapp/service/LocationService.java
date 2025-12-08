@@ -2,7 +2,7 @@ package org.example.weatherapp.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.weatherapp.dto.WeatherDto;
+import org.example.weatherapp.dto.response.WeatherResponse;
 import org.example.weatherapp.dto.request.LocationRequest;
 import org.example.weatherapp.entity.Location;
 import org.example.weatherapp.entity.User;
@@ -24,7 +24,7 @@ public class LocationService {
     private final OpenWeatherApiService apiService;
 
     @Transactional(readOnly = true)
-    public List<WeatherDto> getUserLocationsWithWeather(HttpServletRequest request) {
+    public List<WeatherResponse> getUserLocationsWithWeather(HttpServletRequest request) {
         String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
         User user = sessionService.getById(sessionId).getUser();
         List<Location> locations = locationRepository.findAllByUserId(user.getId());
@@ -51,9 +51,9 @@ public class LocationService {
         locationRepository.delete(location);
     }
 
-    private WeatherDto mapToWeatherWithLocationId(Location loc) {
-        WeatherDto weather = apiService.getWeatherByCoordinates(loc.getLatitude(), loc.getLongitude());
-        return new WeatherDto(loc.getId(), weather.name(), weather.weather(), weather.main());
+    private WeatherResponse mapToWeatherWithLocationId(Location loc) {
+        WeatherResponse weather = apiService.getWeatherByCoordinates(loc.getLatitude(), loc.getLongitude());
+        return new WeatherResponse(loc.getId(), weather.name(), weather.weather(), weather.main());
     }
 
 }

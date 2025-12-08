@@ -2,7 +2,7 @@ package org.example.weatherapp.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.response.LocationResponse;
-import org.example.weatherapp.dto.WeatherDto;
+import org.example.weatherapp.dto.response.WeatherResponse;
 import org.example.weatherapp.service.OpenWeatherApiService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,7 +23,7 @@ public class OpenWeatherApiController {
     }
 
     @GetMapping("/weather")
-    public WeatherDto searchWeather(
+    public WeatherResponse searchWeather(
             @RequestParam("lat") BigDecimal latitude,
             @RequestParam("lon") BigDecimal longitude
     ) {

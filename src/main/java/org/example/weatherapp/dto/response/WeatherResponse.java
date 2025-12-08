@@ -1,4 +1,4 @@
-package org.example.weatherapp.dto;
+package org.example.weatherapp.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record WeatherDto(
+public record WeatherResponse(
         @JsonProperty("id") Long id,
         @JsonProperty("name") String name,
         @JsonProperty("weather") List<Weather> weather,

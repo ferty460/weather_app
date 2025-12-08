@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.response.LocationResponse;
-import org.example.weatherapp.dto.WeatherDto;
+import org.example.weatherapp.dto.response.WeatherResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,19 +58,19 @@ public class OpenWeatherApiService {
     }
 
     @Transactional(readOnly = true)
-    public WeatherDto getWeatherByCoordinates(BigDecimal lat, BigDecimal lon) {
+    public WeatherResponse getWeatherByCoordinates(BigDecimal lat, BigDecimal lon) {
         String url = FIND_BY_COORDS_URL.formatted(lat, lon, apiKey);
 
         try {
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).build();
             String jsonResponse = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            WeatherDto weatherDto = mapper.readValue(jsonResponse, new TypeReference<>() {});
+            WeatherResponse weatherResponse = mapper.readValue(jsonResponse, new TypeReference<>() {});
 
-            if (weatherDto == null) {
+            if (weatherResponse == null) {
                 throw new RuntimeException("The weather could not be found by coords: (%s, %s)".formatted(lat, lon));
             }
 
-            return weatherDto;
+            return weatherResponse;
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("URI to find locations with coords (%s, %s) failed".formatted(lat, lon), e);
         } catch (IOException | InterruptedException e) {
