@@ -30,7 +30,7 @@ public class LocationService {
         List<Location> locations = locationRepository.findAllByUserId(user.getId());
 
         return locations.stream()
-                .map(loc -> apiService.getWeatherByCoordinates(loc.getLatitude(), loc.getLongitude()))
+                .map(this::mapToWeatherWithLocationId)
                 .toList();
     }
 
@@ -49,6 +49,11 @@ public class LocationService {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Location with id " + id + " not found"));
         locationRepository.delete(location);
+    }
+
+    private WeatherDto mapToWeatherWithLocationId(Location loc) {
+        WeatherDto weather = apiService.getWeatherByCoordinates(loc.getLatitude(), loc.getLongitude());
+        return new WeatherDto(loc.getId(), weather.name(), weather.weather(), weather.main());
     }
 
 }

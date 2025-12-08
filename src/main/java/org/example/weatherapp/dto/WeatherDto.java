@@ -4,12 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record WeatherDto(
-        @JsonProperty("id") BigInteger id,
+        @JsonProperty("id") Long id,
         @JsonProperty("name") String name,
         @JsonProperty("weather") List<Weather> weather,
         @JsonProperty("main") Main main
