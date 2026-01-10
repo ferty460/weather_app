@@ -17,22 +17,26 @@
                 </a>
 
                 <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                    <form action="">
-                        <button type="submit" class="me-3 py-2 btn btn-primary">Sign in</button>
-                    </form>
-                    <form action="">
-                        <button type="submit" class="me-3 py-2 btn btn-primary">Sign up</button>
-                    </form>
-                    <span class="me-3 py-2">Guest</span>
-                    <form action="">
-                        <button type="submit" class="me-3 py-2 btn btn-danger">Sign out</button>
-                    </form>
+                    <div class="d-inline-flex" th:if="${user == null}">
+                        <form action="">
+                            <button type="submit" class="me-3 py-2 btn btn-primary">Sign in</button>
+                        </form>
+                        <form action="">
+                            <button type="submit" class="me-3 py-2 btn btn-primary">Sign up</button>
+                        </form>
+                    </div>
+                    <div class="d-inline-flex" th:if="${user != null}">
+                        <span class="me-3 py-2">Guest</span>
+                        <form action="">
+                            <button type="submit" class="me-3 py-2 btn btn-danger">Sign out</button>
+                        </form>
+                    </div>
                 </nav>
             </div>
         </header>
 
         <main class="flex-grow-1 d-flex flex-column">
-            <section>       
+            <section th:if="${user != null}">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Location">
                     <div class="input-group-append">
@@ -44,11 +48,12 @@
             </section>
 
             <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-                <h1 class="display-4 fw-normal">Welcome, Guest!</h1>
+                <h1 class="display-4 fw-normal" th:if="${user == null}">Welcome, Guest!</h1>
+                <h1 class="display-4 fw-normal" th:if="${user != null}" th:text="Welcome, ${user.getLogin()}"></h1>
             </div>
             
             <section class="flex-grow-1 d-flex justify-content-center align-items-center text-center">
-                <div class="row">
+                <div class="row" th:if="${user != null}">
                     <div class="col-12 col-lg-3 col-md-6 mb-4">
                         <div class="card" style="width: 18rem;">
                             <img src="https://openweathermap.org/img/wn/01n@4x.png" class="card-img-top" style="max-height: 150px; object-fit: contain;" alt="...">
@@ -70,9 +75,9 @@
                     </div>
                 </div>
 
-                <!-- <div>
-                    <span class="fs-4 text-muted">So empty...</span>
-                </div> -->
+                <div th:if="${user == null}">
+                    <span class="fs-4 text-muted">It's so empty... <a href="">Sign in</a> to add a location</span>
+                </div>
             </section>
         </main>
         

@@ -13,19 +13,17 @@ public class WebUtil {
     private static final int ONE_HOUR_IN_SECONDS = 60 * 60;
 
     public static String getSessionIdFromCookies(Cookie[] cookies) {
-        String sessionId = null;
-
         for (Cookie cookie : cookies) {
             if (SESSION_COOKIE_NAME.equals(cookie.getName())) {
-                sessionId = cookie.getValue();
+                return cookie.getValue();
             }
         }
 
-        return sessionId;
+        throw new RuntimeException("SessionId not found");
     }
 
     public static void setSessionCookie(UUID sessionId, HttpServletResponse response) {
-        Cookie cookie = new Cookie(WebUtil.SESSION_COOKIE_NAME, sessionId.toString());
+        Cookie cookie = new Cookie(SESSION_COOKIE_NAME, sessionId.toString());
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
@@ -35,7 +33,7 @@ public class WebUtil {
     }
 
     public static void deleteSessionCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(WebUtil.SESSION_COOKIE_NAME, "");
+        Cookie cookie = new Cookie(SESSION_COOKIE_NAME, "");
         cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);

@@ -49,7 +49,7 @@ public class LocationService {
                 .orElseThrow(() -> new IllegalArgumentException("Location with id " + id + " not found"));
 
         if (!user.getLocations().contains(location)) {
-            throw new IllegalArgumentException("Location with id " + id + " not in locations list");
+            throw new IllegalArgumentException("Location with id " + id + " not found");
         }
 
         locationRepository.delete(location);

@@ -1,6 +1,5 @@
 package org.example.weatherapp.interceptor;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -10,47 +9,31 @@ import org.example.weatherapp.util.WebUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.time.LocalDateTime;
-
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
+
+    public static final String CURRENT_USER_ATTR = "currentUser";
 
     private final SessionService sessionService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String path = request.getRequestURI();
-        if (path.startsWith("/auth")) {
+        if (path.startsWith("/auth") || "/".equals(path) || "/error".equals(path)) {
             return true;
         }
 
-        Cookie[] cookies = getCookies(request, response);
-        if (cookies == null) return false;
+        try {
+            String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
+            Session session = sessionService.getById(sessionId);
 
-        String sessionId = WebUtil.getSessionIdFromCookies(cookies);
-        if (sessionId == null) {
+            request.setAttribute(CURRENT_USER_ATTR, session.getUser());
+            return true;
+        } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return false;
         }
-
-        Session session = sessionService.getById(sessionId);
-        if (session.getExpiresAt().isBefore(LocalDateTime.now())) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return false;
-        }
-
-        return true;
-    }
-
-    private Cookie[] getCookies(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return null;
-        }
-        return cookies;
     }
 
 }
-

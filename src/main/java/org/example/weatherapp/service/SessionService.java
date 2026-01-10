@@ -22,8 +22,14 @@ public class SessionService {
 
     @Transactional(readOnly = true)
     public Session getById(String id) {
-        return sessionRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Session with id " + id + " not found"));
+        Session session = sessionRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new RuntimeException("Session not found"));
+
+        if (session.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Session expired");
+        }
+
+        return session;
     }
 
     @Transactional
