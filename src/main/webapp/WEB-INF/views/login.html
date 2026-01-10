@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
 
         <header>
             <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-                <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <a th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
                     <span class="fs-4">WeatherApp</span>
                 </a>
             </div>
@@ -25,20 +25,22 @@
 
             <section class="row justify-content-center">
                 <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-                    <form action="" method="post">
+                    <form th:action="@{/auth/login}" th:method="post">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="username">
+                            <input type="text" id="username" name="login" class="form-control" placeholder="username">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="password">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="password">
                         </div>
                         <div class="mb-3">
                             <button class="btn btn-success w-100" type="submit">Sign in</button>
                         </div>
                     </form>
-                    <p class="fs-6 text-muted text-center">Don't have an account? <a href="">Sign up here</a></p>
+                    <p class="fs-6 text-muted text-center">
+                        Don't have an account? <a th:href="@{/auth/registration}">Sign up here</a>
+                    </p>
                 </div>
             </section>
         </main>

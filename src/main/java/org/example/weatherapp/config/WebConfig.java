@@ -1,7 +1,7 @@
 package org.example.weatherapp.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.weatherapp.interceptor.AuthInterceptor;
+import org.example.weatherapp.interceptor.AuthenticationInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +21,7 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 @RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
 
-    private final AuthInterceptor authInterceptor;
+    private final AuthenticationInterceptor authenticationInterceptor;
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
@@ -60,9 +60,9 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authInterceptor)
+        registry.addInterceptor(authenticationInterceptor)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/auth/**", "/", "/error");
+                .excludePathPatterns("/auth/**", "/error");
     }
 
 }

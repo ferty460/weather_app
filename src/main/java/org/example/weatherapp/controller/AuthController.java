@@ -6,28 +6,45 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.service.AuthService;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/register")
-    public void register(@RequestBody @Valid UserRequest userRequest) {
-        authService.register(userRequest);
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/registration")
+    public String registration() {
+        return "registration";
     }
 
     @PostMapping("/login")
-    public void login(@RequestBody @Valid UserRequest userRequest, HttpServletResponse response) {
+    public String login(@ModelAttribute @Valid UserRequest userRequest, HttpServletResponse response) {
         authService.login(userRequest, response);
+
+        return "redirect:/";
+    }
+
+    @PostMapping("/registration")
+    public String register(@ModelAttribute @Valid UserRequest userRequest) {
+        authService.register(userRequest);
+
+        return "redirect:/auth/login";
     }
 
     @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
         authService.logout(request, response);
+
+        return "redirect:/auth/login";
     }
 
 }

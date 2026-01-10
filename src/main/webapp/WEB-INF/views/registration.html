@@ -12,7 +12,7 @@
 
         <header>
             <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-                <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <a th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
                     <span class="fs-4">WeatherApp</span>
                 </a>
             </div>
@@ -25,20 +25,22 @@
 
             <section class="row justify-content-center">
                 <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-                    <form action="" method="post">
+                    <form th:action="@{/auth/registration}" th:method="post">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" placeholder="username">
+                            <input type="text" id="username" name="login" class="form-control" placeholder="username">
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" placeholder="password">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="password">
                         </div>
                         <div class="mb-3">
                             <button class="btn btn-success w-100" type="submit">Sign up</button>
                         </div>
                     </form>
-                    <p class="fs-6 text-muted text-center">Already have an account? <a href="">Sign in here</a></p>
+                    <p class="fs-6 text-muted text-center">
+                        Already have an account? <a th:href="@{/auth/login}">Sign in here</a>
+                    </p>
                 </div>
             </section>
         </main>
