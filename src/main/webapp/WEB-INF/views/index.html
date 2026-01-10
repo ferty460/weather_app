@@ -9,31 +9,7 @@
 </head>
 <body>
     <div class="container py-3 d-flex flex-column min-vh-100">
-
-        <header>
-            <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
-                <a th:href="@{/}" class="d-flex align-items-center text-dark text-decoration-none">
-                    <span class="fs-4">WeatherApp</span>
-                </a>
-
-                <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
-                    <div class="d-inline-flex" th:if="${user == null}">
-                        <form th:action="@{/auth/login}" th:method="get">
-                            <button type="submit" class="me-3 py-2 btn btn-primary">Sign in</button>
-                        </form>
-                        <form th:action="@{/auth/registration}" th:method="get">
-                            <button type="submit" class="me-3 py-2 btn btn-primary">Sign up</button>
-                        </form>
-                    </div>
-                    <div class="d-inline-flex" th:if="${user != null}">
-                        <span class="me-3 py-2" th:text="${user.getLogin()}"></span>
-                        <form th:action="@{/auth/logout}" th:method="post">
-                            <button type="submit" class="me-3 py-2 btn btn-danger">Sign out</button>
-                        </form>
-                    </div>
-                </nav>
-            </div>
-        </header>
+        <header th:replace="fragments/header.html :: header"></header>
 
         <main class="flex-grow-1 d-flex flex-column">
             <section th:if="${user != null}">
@@ -83,10 +59,8 @@
                 </div>
             </section>
         </main>
-        
-        <footer class="py-3 my-4 border-top text-center mt-auto">  
-            <a href="https://github.com/ferty460/weather_app" class="text-decoration-none">Source code</a>
-        </footer>
+
+        <footer th:replace="fragments/footer.html :: footer"></footer>
     </div>
 </body>
 </html>
