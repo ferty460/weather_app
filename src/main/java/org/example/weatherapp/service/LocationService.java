@@ -45,7 +45,8 @@ public class LocationService {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Location not found"));
 
-        if (!user.getLocations().contains(location)) {
+        List<Location> locations = locationRepository.findAllByUserId(user.getId());
+        if (!locations.contains(location)) {
             throw new IllegalArgumentException("Location not found");
         }
 
