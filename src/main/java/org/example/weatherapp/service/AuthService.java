@@ -1,6 +1,5 @@
 package org.example.weatherapp.service;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -49,17 +48,8 @@ public class AuthService {
 
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return;
-        }
-
-        String sessionId = WebUtil.getSessionIdFromCookies(cookies);
-        if (sessionId == null) {
-            return;
-        }
-
-        WebUtil.deleteSessionCookie(response);
+        WebUtil.getSessionIdFromCookies(request.getCookies())
+                .ifPresent(sessionId -> WebUtil.deleteSessionCookie(response));
     }
 
 }

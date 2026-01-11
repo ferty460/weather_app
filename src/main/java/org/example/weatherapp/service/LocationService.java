@@ -1,17 +1,16 @@
 package org.example.weatherapp.service;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.example.weatherapp.dto.response.WeatherResponse;
 import org.example.weatherapp.dto.request.LocationRequest;
+import org.example.weatherapp.dto.response.WeatherResponse;
 import org.example.weatherapp.entity.Location;
 import org.example.weatherapp.entity.User;
 import org.example.weatherapp.mapper.LocationMapper;
 import org.example.weatherapp.repository.LocationRepository;
-import org.example.weatherapp.util.WebUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -20,12 +19,14 @@ public class LocationService {
 
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
-    private final SessionService sessionService;
     private final OpenWeatherApiService apiService;
 
     @Transactional(readOnly = true)
-    public List<WeatherResponse> getUserLocationsWithWeather(HttpServletRequest request) {
-        User user = getUserFromRequest(request);
+    public List<WeatherResponse> getUserLocationsWithWeather(User user) {
+        if (user == null) {
+            return Collections.emptyList();
+        }
+
         List<Location> locations = locationRepository.findAllByUserId(user.getId());
 
         return locations.stream()
@@ -34,35 +35,33 @@ public class LocationService {
     }
 
     @Transactional
-    public void addToUserList(LocationRequest locationRequest, HttpServletRequest request) {
-        User user = getUserFromRequest(request);
+    public void addToUserList(LocationRequest locationRequest, User user) {
         Location location = locationMapper.toEntity(locationRequest, user);
-
-        Location savedLocation = locationRepository.save(location);
-        user.addLocation(savedLocation);
+        locationRepository.save(location);
     }
 
     @Transactional
-    public void deleteFromUserList(Long id, HttpServletRequest request) {
-        User user = getUserFromRequest(request);
+    public void deleteFromUserList(Long id, User user) {
         Location location = locationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Location with id " + id + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Location not found"));
 
         if (!user.getLocations().contains(location)) {
-            throw new IllegalArgumentException("Location with id " + id + " not found");
+            throw new IllegalArgumentException("Location not found");
         }
 
         locationRepository.delete(location);
     }
 
-    private User getUserFromRequest(HttpServletRequest request) {
-        String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
-        return sessionService.getById(sessionId).getUser();
-    }
-
     private WeatherResponse mapToWeatherWithLocationId(Location loc) {
-        WeatherResponse weather = apiService.searchWeatherByCoordinates(loc.getLatitude(), loc.getLongitude());
-        return new WeatherResponse(loc.getId(), weather.name(), weather.weather(), weather.main());
-    }
+        WeatherResponse weather = apiService.searchWeatherByCoordinates(
+                loc.getLatitude(), loc.getLongitude()
+        );
 
+        return new WeatherResponse(
+                loc.getId(),
+                weather.name(),
+                weather.weather(),
+                weather.main()
+        );
+    }
 }

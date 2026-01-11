@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.experimental.UtilityClass;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @UtilityClass
@@ -12,14 +13,18 @@ public class WebUtil {
     public static final String SESSION_COOKIE_NAME = "SESSION_ID";
     private static final int ONE_HOUR_IN_SECONDS = 60 * 60;
 
-    public static String getSessionIdFromCookies(Cookie[] cookies) {
+    public static Optional<String> getSessionIdFromCookies(Cookie[] cookies) {
+        if (cookies == null) {
+            return Optional.empty();
+        }
+
         for (Cookie cookie : cookies) {
             if (SESSION_COOKIE_NAME.equals(cookie.getName())) {
-                return cookie.getValue();
+                return Optional.of(cookie.getValue());
             }
         }
 
-        throw new RuntimeException("SessionId not found");
+        return Optional.empty();
     }
 
     public static void setSessionCookie(UUID sessionId, HttpServletResponse response) {

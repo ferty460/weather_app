@@ -19,14 +19,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        try {
-            String sessionId = WebUtil.getSessionIdFromCookies(request.getCookies());
-            Session session = sessionService.getById(sessionId);
-
-            request.setAttribute(CURRENT_USER_ATTR, session.getUser());
-        } catch (Exception ignored) {
-
-        }
+        WebUtil.getSessionIdFromCookies(request.getCookies())
+                .map(sessionService::getById)
+                .map(Session::getUser)
+                .ifPresent(user -> request.setAttribute(CURRENT_USER_ATTR, user));
 
         return true;
     }
