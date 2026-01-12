@@ -12,16 +12,7 @@
         <header th:replace="fragments/header.html :: header"></header>
 
         <main class="flex-grow-1 d-flex flex-column">
-            <section>       
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Location" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <form action="" method="get">
-                            <button class="btn btn-success" type="button">Search</button>
-                        </form>
-                    </div>
-                </div>
-            </section>
+            <section th:replace="fragments/search_form.html :: search"></section>
 
             <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
                 <h1 class="display-4 fw-normal">Locations:</h1>
