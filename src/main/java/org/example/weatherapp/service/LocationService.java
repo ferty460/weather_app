@@ -70,6 +70,7 @@ public class LocationService {
     @Transactional
     public void addToUserList(LocationRequest locationRequest, User user) {
         Location locToAdd = locationMapper.toEntity(locationRequest, user);
+        System.out.printf("Location to add: lat(%s), lon(%s)%n", locToAdd.getLatitude(), locToAdd.getLongitude());
 
         List<Location> locations = getAllByUserId(user.getId());
         for (Location loc : locations) {

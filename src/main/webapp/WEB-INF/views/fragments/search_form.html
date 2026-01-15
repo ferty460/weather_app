@@ -1,7 +1,7 @@
 <section th:if="${user != null}" th:fragment="search">
     <form th:action="@{/locations/search}" method="get">
         <div class="input-group mb-3">
-            <input type="text" name="query" class="form-control" placeholder="Location">
+            <input type="text" name="query" class="form-control" placeholder="Location" th:value="${query}">
             <div class="input-group-append">
                 <button class="btn btn-success" type="submit">Search</button>
             </div>
