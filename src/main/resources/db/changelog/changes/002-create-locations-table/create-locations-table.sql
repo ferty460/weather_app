@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS locations
     id        BIGSERIAL PRIMARY KEY,
     name      VARCHAR(128) NOT NULL,
     user_id   BIGINT       NOT NULL,
-    latitude  NUMERIC(10, 8),
-    longitude NUMERIC(11, 8),
+    latitude  NUMERIC(10, 7),
+    longitude NUMERIC(11, 7),
 
     FOREIGN KEY (user_id) REFERENCES users (id)
 );

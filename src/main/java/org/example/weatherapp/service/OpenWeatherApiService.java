@@ -26,7 +26,7 @@ public class OpenWeatherApiService {
     private static final String API_URL = "https://api.openweathermap.org/";
     private static final String FIND_BY_NAME_URL = API_URL + "geo/1.0/direct?q=%s&limit=%s&appid=%s&units=metric";
     private static final String FIND_BY_COORDS_URL = API_URL + "data/2.5/weather?lat=%s&lon=%s&appid=%s&units=metric";
-    private static final int LOCATIONS_LIMIT = 5;
+    private static final int LOCATIONS_LIMIT = 10;
 
     @Value("${open-weather.api.key}")
     private String apiKey;
@@ -41,13 +41,13 @@ public class OpenWeatherApiService {
         try {
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).build();
             String jsonResponse = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            List<LocationResponse> locationResponseList = mapper.readValue(jsonResponse, new TypeReference<>() {});
+            List<LocationResponse> locations = mapper.readValue(jsonResponse, new TypeReference<>() {});
 
-            if (locationResponseList.isEmpty()) {
+            if (locations.isEmpty()) {
                 throw new RuntimeException("The location by name could not be found by name: " + name);
             }
 
-            return locationResponseList;
+            return locations;
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("URI to find locations with name " + name + " failed", e);
         } catch (IOException | InterruptedException e) {

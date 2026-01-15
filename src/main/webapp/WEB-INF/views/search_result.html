@@ -31,8 +31,11 @@
                                 <li class="list-group-item">Country: <span th:text="${loc.country()}"></span></li>
                                 <li class="list-group-item">State: <span th:text="${loc.state()}"></span></li>
                                 <li class="list-group-item">
-                                    <form action="" method="post">
-                                        <button class="btn btn-success" type="button">Add</button>
+                                    <form th:action="@{/locations}" th:method="post">
+                                        <input type="hidden" name="name" th:value="${loc.name()}">
+                                        <input type="hidden" name="lat" th:value="${loc.lat()}">
+                                        <input type="hidden" name="lon" th:value="${loc.lon()}">
+                                        <button class="btn btn-success" type="submit">Add</button>
                                     </form>
                                 </li>
                             </ul>

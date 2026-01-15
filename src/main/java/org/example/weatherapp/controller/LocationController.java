@@ -17,9 +17,12 @@ public class LocationController {
     private final LocationService locationService;
 
     @PostMapping
-    public void addLocation(@RequestBody LocationRequest locationRequest, HttpServletRequest request) {
+    public String addLocation(@ModelAttribute LocationRequest locationRequest, HttpServletRequest request) {
         User user = (User) request.getAttribute(AuthenticationInterceptor.CURRENT_USER_ATTR);
         locationService.addToUserList(locationRequest, user);
+
+        String referer = request.getHeader("Referer");
+        return "redirect:" + (referer != null ? referer : "/");
     }
 
     @DeleteMapping("/{id}")
