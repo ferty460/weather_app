@@ -7,9 +7,10 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "locations")
 public class Location {
@@ -18,6 +19,7 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @EqualsAndHashCode.Include
     @Column(name = "name", length = 128, nullable = false)
     private String name;
 
@@ -25,9 +27,11 @@ public class Location {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @EqualsAndHashCode.Include
     @Column(name = "latitude")
     private BigDecimal latitude;
 
+    @EqualsAndHashCode.Include
     @Column(name = "longitude")
     private BigDecimal longitude;
 

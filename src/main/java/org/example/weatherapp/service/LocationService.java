@@ -36,8 +36,16 @@ public class LocationService {
 
     @Transactional
     public void addToUserList(LocationRequest locationRequest, User user) {
-        Location location = locationMapper.toEntity(locationRequest, user);
-        locationRepository.save(location);
+        Location locToAdd = locationMapper.toEntity(locationRequest, user);
+
+        List<Location> locations = locationRepository.findAllByUserId(user.getId());
+        for (Location loc : locations) {
+            if (locToAdd.equals(loc)) {
+                throw new RuntimeException("Location already exists");
+            }
+        }
+
+        locationRepository.save(locToAdd);
     }
 
     @Transactional
@@ -65,4 +73,5 @@ public class LocationService {
                 weather.main()
         );
     }
+
 }
