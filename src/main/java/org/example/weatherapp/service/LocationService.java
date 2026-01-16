@@ -1,6 +1,7 @@
 package org.example.weatherapp.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.weatherapp.dto.LocationKey;
 import org.example.weatherapp.dto.request.LocationRequest;
 import org.example.weatherapp.dto.response.LocationResponse;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class LocationService {
@@ -71,29 +73,43 @@ public class LocationService {
 
     @Transactional
     public void addToUserList(LocationRequest locationRequest, User user) {
-        Location locToAdd = locationMapper.toEntity(locationRequest, user);
+        log.debug("Adding location {} for user {}", locationRequest, user.getId());
 
+        Location locToAdd = locationMapper.toEntity(locationRequest, user);
         List<Location> locations = getAllByUserId(user.getId());
+
         for (Location loc : locations) {
             if (locToAdd.equals(loc)) {
+                log.warn(
+                        "Duplicate location detected for user {}: name={}, lat={}, lon={}",
+                        user.getId(),
+                        locToAdd.getName(),
+                        locToAdd.getLatitude(),
+                        locToAdd.getLongitude()
+                );
                 throw new LocationAlreadyExistsException();
             }
         }
 
         locationRepository.save(locToAdd);
+        log.info("Location added for user {}: id={}", user.getId(), locToAdd.getId());
     }
 
     @Transactional
     public void deleteFromUserList(Long id, User user) {
+        log.debug("Deleting location with id {} for user {}", id, user.getId());
+
         Location location = locationRepository.findById(id)
                 .orElseThrow(LocationNotFoundException::new);
 
         List<Location> locations = getAllByUserId(user.getId());
         if (!locations.contains(location)) {
+            log.warn("User {} attempted to delete non-owned location with id {}", user.getId(), id);
             throw new LocationNotFoundException();
         }
 
         locationRepository.delete(location);
+        log.info("Location deleted for user {}: id={}", user.getId(), id);
     }
 
     private WeatherResponse mapToWeatherWithLocationId(Location loc) {

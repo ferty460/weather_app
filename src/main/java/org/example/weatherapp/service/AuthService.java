@@ -3,6 +3,7 @@ package org.example.weatherapp.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.entity.Session;
 import org.example.weatherapp.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -28,6 +30,8 @@ public class AuthService {
     @Transactional
     public void register(UserRequest userRequest) {
         String login = userRequest.login();
+        log.debug("Registration attempt, user={}", login);
+
         if (userService.existsByLogin(login)) {
             throw new UserAlreadyExistsException(login);
         }
@@ -36,30 +40,38 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(userRequest.password()));
 
         userService.create(user);
+        log.info("User registered: {}", login);
     }
 
     @Transactional
     public void login(UserRequest userRequest, HttpServletResponse response) {
-        User user;
+        String login = userRequest.login();
+        log.debug("Login attempt, user={}", login);
 
+        User user;
         try {
-            user = userService.getByLogin(userRequest.login());
+            user = userService.getByLogin(login);
         } catch (UserNotFoundException e) {
             throw new InvalidCredentialsException();
         }
 
         if (!BCrypt.checkpw(userRequest.password(), user.getPassword())) {
+            log.warn("Login failed: wrong password, user={}", login);
             throw new InvalidCredentialsException();
         }
 
         Session session = sessionService.create(userRequest);
         WebUtil.setSessionCookie(session.getId(), response);
+        log.info("User logged in: {}", login);
     }
 
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         WebUtil.getSessionIdFromCookies(request.getCookies())
-                .ifPresent(sessionId -> WebUtil.deleteSessionCookie(response));
+                .ifPresent(sessionId -> {
+                    WebUtil.deleteSessionCookie(response);
+                    log.info("User logged out, session={}", sessionId);
+                });
     }
 
 }

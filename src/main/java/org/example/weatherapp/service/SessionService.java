@@ -1,6 +1,7 @@
 package org.example.weatherapp.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.entity.Session;
 import org.example.weatherapp.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SessionService {
@@ -25,7 +27,10 @@ public class SessionService {
     @Transactional(readOnly = true)
     public Session getById(String id) {
         Session session = sessionRepository.findById(UUID.fromString(id))
-                .orElseThrow(SessionNotFoundException::new);
+                .orElseThrow(() -> {
+                    log.error("Session with id={} not found", id);
+                    return new SessionNotFoundException();
+                });
 
         if (session.getExpiresAt().isBefore(LocalDateTime.now())) {
             throw new SessionExpiredException();
@@ -36,7 +41,10 @@ public class SessionService {
 
     @Transactional
     public Session create(UserRequest userRequest) {
-        User user = userService.getByLogin(userRequest.login());
+        String login = userRequest.login();
+        log.debug("Creating new session for user {}", login);
+
+        User user = userService.getByLogin(login);
         LocalDateTime expiresAt = LocalDateTime.now().plusHours(SESSION_EXPIRATION_HOURS);
 
         Session session = new Session();

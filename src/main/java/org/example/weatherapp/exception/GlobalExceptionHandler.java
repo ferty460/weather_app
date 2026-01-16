@@ -1,6 +1,7 @@
 package org.example.weatherapp.exception;
 
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.example.weatherapp.exception.auth.InvalidCredentialsException;
 import org.example.weatherapp.exception.auth.UserAlreadyExistsException;
 import org.example.weatherapp.exception.auth.UserNotFoundException;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -63,6 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public String handleUserNotFound(UserNotFoundException ex, HttpServletResponse response, Model model) {
+        log.error(ex.getMessage());
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         model.addAttribute("error", ex.getMessage());
         model.addAttribute("code", HttpServletResponse.SC_NOT_FOUND);

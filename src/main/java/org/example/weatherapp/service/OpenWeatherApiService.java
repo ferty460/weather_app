@@ -3,6 +3,7 @@ package org.example.weatherapp.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.weatherapp.dto.response.LocationResponse;
 import org.example.weatherapp.dto.response.WeatherResponse;
 import org.example.weatherapp.exception.api.WeatherApiException;
@@ -20,6 +21,7 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OpenWeatherApiService {
@@ -44,8 +46,10 @@ public class OpenWeatherApiService {
 
             return mapper.readValue(jsonResponse, new TypeReference<>() {});
         } catch (IOException | InterruptedException e) {
+            log.error("Weather API error for name={}", name, e);
             throw new WeatherApiException(e);
         } catch (IllegalArgumentException e) {
+            log.error("URI error for name={}", name, e);
             throw new RuntimeException("URI to find locations with name " + name + " failed", e);
         }
     }
@@ -64,9 +68,11 @@ public class OpenWeatherApiService {
 
             return weatherResponse;
         } catch (IOException | InterruptedException e) {
+            log.error("Weather API error for lat={}, lon={}", lat, lon, e);
             throw new WeatherApiException(e);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("URI to find locations with coords (%s, %s) failed".formatted(lat, lon), e);
+            log.error("URI error for lat={}, lon={}", lat, lon, e);
+            throw new WeatherApiException(e);
         }
     }
 
