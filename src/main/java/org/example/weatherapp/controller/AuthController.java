@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.service.AuthService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -17,7 +19,8 @@ public class AuthController {
     private final AuthService authService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(Model model) {
+        model.addAttribute("userRequest", new UserRequest("", ""));
         return "login";
     }
 
@@ -27,7 +30,16 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute @Valid UserRequest userRequest, HttpServletResponse response) {
+    public String login(
+            @ModelAttribute @Valid UserRequest userRequest,
+            BindingResult bindingResult,
+            HttpServletResponse response
+    ) {
+        if (bindingResult.hasErrors()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return "login";
+        }
+
         authService.login(userRequest, response);
 
         return "redirect:/";

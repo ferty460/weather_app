@@ -17,6 +17,9 @@
             <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
                 <h1 class="display-4 fw-normal" th:if="${user == null}">Welcome, Guest!</h1>
                 <h1 class="display-4 fw-normal" th:if="${user != null}" th:text="'Welcome, ' + ${user.getLogin()}"></h1>
+                <div class="text-danger text-center" th:if="${error != null}">
+                    <p th:text="${error}"></p>
+                </div>
             </div>
             
             <section class="flex-grow-1 d-flex justify-content-center align-items-center text-center">

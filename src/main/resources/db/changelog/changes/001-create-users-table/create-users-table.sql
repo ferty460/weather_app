@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS users
 (
     id       BIGSERIAL PRIMARY KEY,
-    login    VARCHAR(128) NOT NULL UNIQUE,
+    login    VARCHAR(64) NOT NULL UNIQUE,
     password VARCHAR(64)  NOT NULL
 );
 

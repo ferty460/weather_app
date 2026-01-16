@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Size;
 
 public record UserRequest(
 
-        @NotBlank(message = "Login is required")
-        @Size(min = 3, max = 128, message = "Login must be between 3 and 128 characters")
+        @NotBlank(message = "Username is required")
+        @Size(min = 3, max = 64, message = "Username must be between 3 and 64 characters")
         String login,
 
         @NotBlank(message = "Password is required")
