@@ -9,10 +9,10 @@
 </head>
 <body>
     <div class="container py-3 d-flex flex-column min-vh-100">
-        <header th:replace="fragments/header.html :: header"></header>
+        <header th:replace="~{fragments/header :: header}"></header>
 
         <main class="flex-grow-1 d-flex flex-column">
-            <section th:replace="fragments/search_form.html :: search"></section>
+            <section th:replace="~{fragments/search_form :: search}"></section>
 
             <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
                 <h1 class="display-4 fw-normal" th:if="${user == null}">Welcome, Guest!</h1>
@@ -65,7 +65,7 @@
             </section>
         </main>
 
-        <footer th:replace="fragments/footer.html :: footer"></footer>
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
     </div>
 </body>
 </html>
