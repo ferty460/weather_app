@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.entity.Session;
 import org.example.weatherapp.entity.User;
+import org.example.weatherapp.exception.session.SessionExpiredException;
+import org.example.weatherapp.exception.session.SessionNotFoundException;
 import org.example.weatherapp.repository.SessionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,10 +25,10 @@ public class SessionService {
     @Transactional(readOnly = true)
     public Session getById(String id) {
         Session session = sessionRepository.findById(UUID.fromString(id))
-                .orElseThrow(() -> new RuntimeException("Session not found"));
+                .orElseThrow(SessionNotFoundException::new);
 
         if (session.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("Session expired");
+            throw new SessionExpiredException();
         }
 
         return session;

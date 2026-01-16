@@ -6,6 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.request.UserRequest;
 import org.example.weatherapp.entity.Session;
 import org.example.weatherapp.entity.User;
+import org.example.weatherapp.exception.auth.InvalidCredentialsException;
+import org.example.weatherapp.exception.auth.UserAlreadyExistsException;
+import org.example.weatherapp.exception.auth.UserNotFoundException;
 import org.example.weatherapp.mapper.UserMapper;
 import org.example.weatherapp.util.WebUtil;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -24,8 +27,9 @@ public class AuthService {
 
     @Transactional
     public void register(UserRequest userRequest) {
-        if (userService.existsByLogin(userRequest.login())) {
-            throw new IllegalArgumentException("User with login " + userRequest.login() + " already exists");
+        String login = userRequest.login();
+        if (userService.existsByLogin(login)) {
+            throw new UserAlreadyExistsException(login);
         }
 
         User user = userMapper.toEntity(userRequest);
@@ -36,10 +40,16 @@ public class AuthService {
 
     @Transactional
     public void login(UserRequest userRequest, HttpServletResponse response) {
-        User user = userService.getByLogin(userRequest.login());
+        User user;
+
+        try {
+            user = userService.getByLogin(userRequest.login());
+        } catch (UserNotFoundException e) {
+            throw new InvalidCredentialsException();
+        }
 
         if (!BCrypt.checkpw(userRequest.password(), user.getPassword())) {
-            throw new RuntimeException("Wrong password");
+            throw new InvalidCredentialsException();
         }
 
         Session session = sessionService.create(userRequest);

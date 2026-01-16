@@ -7,6 +7,8 @@ import org.example.weatherapp.dto.response.LocationResponse;
 import org.example.weatherapp.dto.response.WeatherResponse;
 import org.example.weatherapp.entity.Location;
 import org.example.weatherapp.entity.User;
+import org.example.weatherapp.exception.location.LocationAlreadyExistsException;
+import org.example.weatherapp.exception.location.LocationNotFoundException;
 import org.example.weatherapp.mapper.LocationMapper;
 import org.example.weatherapp.repository.LocationRepository;
 import org.springframework.stereotype.Service;
@@ -70,12 +72,11 @@ public class LocationService {
     @Transactional
     public void addToUserList(LocationRequest locationRequest, User user) {
         Location locToAdd = locationMapper.toEntity(locationRequest, user);
-        System.out.printf("Location to add: lat(%s), lon(%s)%n", locToAdd.getLatitude(), locToAdd.getLongitude());
 
         List<Location> locations = getAllByUserId(user.getId());
         for (Location loc : locations) {
             if (locToAdd.equals(loc)) {
-                throw new RuntimeException("Location already exists");
+                throw new LocationAlreadyExistsException();
             }
         }
 
@@ -85,11 +86,11 @@ public class LocationService {
     @Transactional
     public void deleteFromUserList(Long id, User user) {
         Location location = locationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Location not found"));
+                .orElseThrow(LocationNotFoundException::new);
 
         List<Location> locations = getAllByUserId(user.getId());
         if (!locations.contains(location)) {
-            throw new IllegalArgumentException("Location not found");
+            throw new LocationNotFoundException();
         }
 
         locationRepository.delete(location);

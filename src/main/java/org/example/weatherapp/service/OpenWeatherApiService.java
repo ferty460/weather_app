@@ -5,9 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.weatherapp.dto.response.LocationResponse;
 import org.example.weatherapp.dto.response.WeatherResponse;
+import org.example.weatherapp.exception.api.WeatherApiException;
+import org.example.weatherapp.exception.api.WeatherNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -33,7 +34,6 @@ public class OpenWeatherApiService {
     private final ObjectMapper mapper;
     private final HttpClient httpClient;
 
-    @Transactional(readOnly = true)
     public List<LocationResponse> searchLocationsByName(String name) {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String url = FIND_BY_NAME_URL.formatted(encodedName, LOCATIONS_LIMIT, apiKey);
@@ -41,21 +41,15 @@ public class OpenWeatherApiService {
         try {
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).build();
             String jsonResponse = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            List<LocationResponse> locations = mapper.readValue(jsonResponse, new TypeReference<>() {});
 
-            if (locations.isEmpty()) {
-                throw new RuntimeException("The location by name could not be found by name: " + name);
-            }
-
-            return locations;
+            return mapper.readValue(jsonResponse, new TypeReference<>() {});
+        } catch (IOException | InterruptedException e) {
+            throw new WeatherApiException(e);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("URI to find locations with name " + name + " failed", e);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 
-    @Transactional(readOnly = true)
     public WeatherResponse searchWeatherByCoordinates(BigDecimal lat, BigDecimal lon) {
         String url = FIND_BY_COORDS_URL.formatted(lat, lon, apiKey);
 
@@ -65,14 +59,14 @@ public class OpenWeatherApiService {
             WeatherResponse weatherResponse = mapper.readValue(jsonResponse, new TypeReference<>() {});
 
             if (weatherResponse == null) {
-                throw new RuntimeException("The weather could not be found by coords: (%s, %s)".formatted(lat, lon));
+                throw new WeatherNotFoundException(lat ,lon);
             }
 
             return weatherResponse;
+        } catch (IOException | InterruptedException e) {
+            throw new WeatherApiException(e);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException("URI to find locations with coords (%s, %s) failed".formatted(lat, lon), e);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 
