@@ -58,6 +58,7 @@ public class TestHibernateConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     private Properties hibernateProperties() {
         Properties properties = new Properties();
         properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
