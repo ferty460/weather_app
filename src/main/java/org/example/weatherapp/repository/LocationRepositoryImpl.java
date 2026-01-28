@@ -18,7 +18,7 @@ public class LocationRepositoryImpl implements LocationRepository {
     @Override
     public Optional<Location> findById(Long id) {
         Session session = sessionFactory.getCurrentSession();
-        String hql = "SELECT l FROM Location l WHERE l.id = :id";
+        String hql = "SELECT l FROM Location l JOIN FETCH l.user WHERE l.id = :id";
 
         Location location = session.createQuery(hql, Location.class)
                 .setParameter("id", id)

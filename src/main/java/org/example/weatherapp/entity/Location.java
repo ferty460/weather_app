@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "user")
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -23,7 +23,7 @@ public class Location {
     @Column(name = "name", length = 128, nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

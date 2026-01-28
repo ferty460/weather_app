@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
+@ToString(exclude = "locations")
 @Entity
 @Table(name = "users")
 public class User {
@@ -26,9 +26,5 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Location> locations;
-
-    public void addLocation(Location location) {
-        this.locations.add(location);
-    }
 
 }
