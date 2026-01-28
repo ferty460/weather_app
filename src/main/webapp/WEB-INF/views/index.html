@@ -21,46 +21,48 @@
                     <p th:text="${error}"></p>
                 </div>
             </div>
-            
-            <section class="flex-grow-1 d-flex justify-content-center align-items-center text-center">
-                <div class="row" th:if="${user != null && !locations.isEmpty()}">
-                    <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="loc : ${locations}">
-                        <div class="card" style="width: 18rem;">
-                            <img th:src="@{'https://openweathermap.org/img/wn/' + ${loc.weather[0].icon} + '@4x.png'}"
-                                 class="card-img-top" style="max-height: 150px; object-fit: contain;" alt="...">
-                            <div class="card-body">
-                                <h5 class="card-title fs-3"><span th:text="${loc.main().temp()}"></span>°C</h5>
-                                <p class="card-text fs-4"><b th:text="${loc.name()}"></b></p>
-                            </div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    Feels like <span th:text="${loc.main().feelsLike()}"></span>°C
-                                </li>
-                                <li class="list-group-item" th:text="${loc.weather[0].description()}"></li>
-                                <li class="list-group-item">
-                                    Humidity: <span th:text="${loc.main().humidity()}"></span>%
-                                </li>
-                            </ul>
-                            <div class="card-body">
-                                <form th:action="@{/locations/{id}(id=${loc.id()})}" th:method="post">
-                                    <input type="hidden" name="_method" value="delete">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
+
+            <section class="flex-grow-1">
+                <div class="container">
+                    <div class="row justify-content-center" th:if="${user != null && !locations.isEmpty()}">
+                        <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="loc : ${locations}">
+                            <div class="card" style="width: 18rem;">
+                                <img th:src="@{'https://openweathermap.org/img/wn/' + ${loc.weather[0].icon} + '@4x.png'}"
+                                     class="card-img-top" style="max-height: 150px; object-fit: contain;" th:alt="|${loc.name()} weather pic|">
+                                <div class="card-body">
+                                    <h5 class="card-title fs-3"><span th:text="${loc.main().temp()}"></span>°C</h5>
+                                    <p class="card-text fs-4"><b th:text="${loc.name()}"></b></p>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">
+                                        Feels like <span th:text="${loc.main().feelsLike()}"></span>°C
+                                    </li>
+                                    <li class="list-group-item" th:text="${loc.weather[0].description()}"></li>
+                                    <li class="list-group-item">
+                                        Humidity: <span th:text="${loc.main().humidity()}"></span>%
+                                    </li>
+                                </ul>
+                                <div class="card-body">
+                                    <form th:action="@{/locations/{id}(id=${loc.id()})}" th:method="post">
+                                        <input type="hidden" name="_method" value="delete">
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div th:if="${user != null && locations.isEmpty()}">
-                    <span class="fs-4 text-muted">
-                        It's so empty...
-                    </span>
-                </div>
+                    <div th:if="${user != null && locations.isEmpty()}" class="text-center">
+                        <span class="fs-4 text-muted">
+                            It's so empty...
+                        </span>
+                    </div>
 
-                <div th:if="${user == null}">
-                    <span class="fs-4 text-muted">
-                        It's so empty... <a th:href="@{/auth/login}">Sign in</a> to add a location
-                    </span>
+                    <div th:if="${user == null}" class="text-center">
+                        <span class="fs-4 text-muted">
+                            It's so empty... <a th:href="@{/auth/login}">Sign in</a> to add a location
+                        </span>
+                    </div>
                 </div>
             </section>
         </main>

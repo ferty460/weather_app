@@ -18,33 +18,35 @@
                 <h1 class="display-4 fw-normal">Locations:</h1>
             </div>
 
-            <section class="flex-grow-1 d-flex justify-content-center align-items-center text-center">
-                <div class="row">
-                    <div class="col-12 col-lg-3 col-md-6 mb-4" th:if="${!locations.isEmpty()}" th:each="loc : ${locations}">
-                        <div class="card" style="width: 18rem;">
-                            <div class="card-header">
-                                <b th:text="${loc.name()}"></b>
+            <section class="flex-grow-1">
+                <div class="container">
+                    <div class="row justify-content-center" th:if="${!locations.isEmpty()}">
+                        <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="loc : ${locations}">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-header">
+                                    <b th:text="${loc.name()}"></b>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item">Latitude: <span th:text="${loc.lat()}"></span></li>
+                                    <li class="list-group-item">Longitude: <span th:text="${loc.lon()}"></span></li>
+                                    <li class="list-group-item">Country: <span th:text="${loc.country()}"></span></li>
+                                    <li class="list-group-item">State: <span th:text="${loc.state()}"></span></li>
+                                    <li class="list-group-item">
+                                        <form th:action="@{/locations}" th:method="post">
+                                            <input type="hidden" name="name" th:value="${loc.name()}">
+                                            <input type="hidden" name="lat" th:value="${loc.lat()}">
+                                            <input type="hidden" name="lon" th:value="${loc.lon()}">
+                                            <button class="btn btn-success" type="submit">Add</button>
+                                        </form>
+                                    </li>
+                                </ul>
                             </div>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">Latitude: <span th:text="${loc.lat()}"></span></li>
-                                <li class="list-group-item">Longitude: <span th:text="${loc.lon()}"></span></li>
-                                <li class="list-group-item">Country: <span th:text="${loc.country()}"></span></li>
-                                <li class="list-group-item">State: <span th:text="${loc.state()}"></span></li>
-                                <li class="list-group-item">
-                                    <form th:action="@{/locations}" th:method="post">
-                                        <input type="hidden" name="name" th:value="${loc.name()}">
-                                        <input type="hidden" name="lat" th:value="${loc.lat()}">
-                                        <input type="hidden" name="lon" th:value="${loc.lon()}">
-                                        <button class="btn btn-success" type="submit">Add</button>
-                                    </form>
-                                </li>
-                            </ul>
                         </div>
                     </div>
-                </div>
 
-                <div th:if="${locations.isEmpty()}">
-                    <span class="fs-4 text-muted" th:text="|Nothing was found for your query: ${query}|"></span>
+                    <div th:if="${locations.isEmpty()}" class="text-center">
+                        <span class="fs-4 text-muted" th:text="|Nothing was found for your query: ${query}|"></span>
+                    </div>
                 </div>
             </section>
         </main>
