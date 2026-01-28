@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.net.http.HttpClient;
 
 @Configuration
-@PropertySource("classpath:application.properties")
 @ComponentScan(basePackages = "org.example.weatherapp")
 public class AppConfig {
 

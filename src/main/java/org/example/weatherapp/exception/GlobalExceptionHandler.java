@@ -18,59 +18,62 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final String ATTRIBUTE_NAME_ERROR = "error";
+    public static final String ATTRIBUTE_NAME_CODE = "code";
+
     @ExceptionHandler(UserAlreadyExistsException.class)
     public String handleUserExists(UserAlreadyExistsException ex, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        redirectAttributes.addFlashAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         return "redirect:/auth/registration";
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
     public String handleInvalidCredentials(InvalidCredentialsException ex, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        redirectAttributes.addFlashAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         return "redirect:/auth/login";
     }
 
     @ExceptionHandler(SessionExpiredException.class)
     public String handleSessionExpired(SessionExpiredException ex, RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("error", ex.getMessage());
+        redirectAttributes.addFlashAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         return "redirect:/auth/login";
     }
 
     @ExceptionHandler(LocationAlreadyExistsException.class)
     public String handleLocationExists(LocationAlreadyExistsException ex, HttpServletResponse response, Model model) {
         response.setStatus(HttpServletResponse.SC_CONFLICT);
-        model.addAttribute("error", ex.getMessage());
-        model.addAttribute("code", HttpServletResponse.SC_CONFLICT);
+        model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
+        model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_CONFLICT);
 
-        return "error";
+        return ATTRIBUTE_NAME_ERROR;
     }
 
     @ExceptionHandler(LocationNotFoundException.class)
     public String handleLocationNotFound(LocationNotFoundException ex, HttpServletResponse response, Model model) {
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        model.addAttribute("error", ex.getMessage());
-        model.addAttribute("code", HttpServletResponse.SC_NOT_FOUND);
+        model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
+        model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_NOT_FOUND);
 
-        return "error";
+        return ATTRIBUTE_NAME_ERROR;
     }
 
     @ExceptionHandler(SessionNotFoundException.class)
     public String handleSessionNotFound(SessionNotFoundException ex, HttpServletResponse response, Model model) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        model.addAttribute("error", ex.getMessage());
-        model.addAttribute("code", HttpServletResponse.SC_UNAUTHORIZED);
+        model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
+        model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_UNAUTHORIZED);
 
-        return "error";
+        return ATTRIBUTE_NAME_ERROR;
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public String handleUserNotFound(UserNotFoundException ex, HttpServletResponse response, Model model) {
         log.error(ex.getMessage());
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        model.addAttribute("error", ex.getMessage());
-        model.addAttribute("code", HttpServletResponse.SC_NOT_FOUND);
+        model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
+        model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_NOT_FOUND);
 
-        return "error";
+        return ATTRIBUTE_NAME_ERROR;
     }
 
 }

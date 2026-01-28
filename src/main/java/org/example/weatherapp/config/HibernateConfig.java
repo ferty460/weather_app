@@ -19,6 +19,12 @@ import java.util.Properties;
 @RequiredArgsConstructor
 public class HibernateConfig {
 
+    private static final String HIBERNATE_DIALECT = "hibernate.dialect";
+    private static final String HIBERNATE_SHOW_SQL = "hibernate.show_sql";
+    private static final String HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
+    private static final String HIBERNATE_HIGHLIGHT_SQL = "hibernate.highlight_sql";
+    private static final String HIBERNATE_HBM_2_DDL_AUTO = "hibernate.hbm2ddl.auto";
+
     private final Environment env;
 
     @Bean
@@ -52,11 +58,11 @@ public class HibernateConfig {
 
     private Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
-        properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
-        properties.put("hibernate.format_sql", env.getProperty("hibernate.format_sql"));
-        properties.put("hibernate.highlight_sql", env.getProperty("hibernate.highlight_sql"));
-        properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put(HIBERNATE_DIALECT, env.getProperty(HIBERNATE_DIALECT));
+        properties.put(HIBERNATE_SHOW_SQL, env.getProperty(HIBERNATE_SHOW_SQL));
+        properties.put(HIBERNATE_FORMAT_SQL, env.getProperty(HIBERNATE_FORMAT_SQL));
+        properties.put(HIBERNATE_HIGHLIGHT_SQL, env.getProperty(HIBERNATE_HIGHLIGHT_SQL));
+        properties.put(HIBERNATE_HBM_2_DDL_AUTO, env.getProperty(HIBERNATE_HBM_2_DDL_AUTO));
 
         return properties;
     }

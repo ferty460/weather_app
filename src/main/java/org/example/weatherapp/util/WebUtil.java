@@ -39,10 +39,10 @@ public class WebUtil {
 
     public static void deleteSessionCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie(SESSION_COOKIE_NAME, "");
-        cookie.setMaxAge(0);
         cookie.setHttpOnly(true);
         cookie.setSecure(true);
         cookie.setPath("/");
+        cookie.setMaxAge(0);
 
         response.addCookie(cookie);
     }
