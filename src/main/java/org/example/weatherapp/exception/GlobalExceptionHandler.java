@@ -12,6 +12,7 @@ import org.example.weatherapp.exception.session.SessionNotFoundException;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Slf4j
@@ -45,7 +46,7 @@ public class GlobalExceptionHandler {
         model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_CONFLICT);
 
-        return ATTRIBUTE_NAME_ERROR;
+        return "error";
     }
 
     @ExceptionHandler(LocationNotFoundException.class)
@@ -54,7 +55,7 @@ public class GlobalExceptionHandler {
         model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_NOT_FOUND);
 
-        return ATTRIBUTE_NAME_ERROR;
+        return "error";
     }
 
     @ExceptionHandler(SessionNotFoundException.class)
@@ -63,7 +64,7 @@ public class GlobalExceptionHandler {
         model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_UNAUTHORIZED);
 
-        return ATTRIBUTE_NAME_ERROR;
+        return "error";
     }
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -73,7 +74,28 @@ public class GlobalExceptionHandler {
         model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_NOT_FOUND);
 
-        return ATTRIBUTE_NAME_ERROR;
+        return "error";
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public String handleNotFound(NoHandlerFoundException ex, HttpServletResponse response, Model model) {
+        log.error("Page not found: {}", ex.getRequestURL());
+
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        model.addAttribute(ATTRIBUTE_NAME_ERROR, "Page not found: " + ex.getRequestURL());
+        model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_NOT_FOUND);
+
+        return "error";
+    }
+
+    @ExceptionHandler(Exception.class)
+    public String handleException(Exception ex, HttpServletResponse response, Model model) {
+        log.error(ex.getMessage());
+        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
+        model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+
+        return "error";
     }
 
 }
