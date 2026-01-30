@@ -21,14 +21,20 @@
                     <div class="text-danger text-center" th:if="${error != null}">
                         <p th:text="${error}"></p>
                     </div>
-                    <form th:action="@{/auth/registration}" th:method="post">
+                    <form th:action="@{/auth/registration}" th:method="post" th:object="${userRequest}">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" id="username" name="login" class="form-control" placeholder="username">
+                            <input type="text" id="username" name="login"
+                                   class="form-control" placeholder="username" th:field="*{login}">
+
+                            <div class="text-danger" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" id="password" name="password" class="form-control" placeholder="password">
+                            <input type="password" id="password" name="password"
+                                   class="form-control" placeholder="password" th:field="*{password}">
+
+                            <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                         </div>
                         <div class="mb-3">
                             <button class="btn btn-success w-100" type="submit">Sign up</button>

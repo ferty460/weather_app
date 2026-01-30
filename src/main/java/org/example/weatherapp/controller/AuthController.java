@@ -25,7 +25,8 @@ public class AuthController {
     }
 
     @GetMapping("/registration")
-    public String registration() {
+    public String registration(Model model) {
+        model.addAttribute("userRequest", new UserRequest("", ""));
         return "registration";
     }
 
@@ -46,7 +47,16 @@ public class AuthController {
     }
 
     @PostMapping("/registration")
-    public String register(@ModelAttribute @Valid UserRequest userRequest) {
+    public String register(
+            @ModelAttribute @Valid UserRequest userRequest,
+            BindingResult bindingResult,
+            HttpServletResponse response
+    ) {
+        if (bindingResult.hasErrors()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return "registration";
+        }
+
         authService.register(userRequest);
 
         return "redirect:/auth/login";
