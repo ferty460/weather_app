@@ -70,6 +70,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public String handleUserNotFound(UserNotFoundException ex, HttpServletResponse response, Model model) {
         log.error(ex.getMessage());
+
         response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_NOT_FOUND);
@@ -91,6 +92,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String handleException(Exception ex, HttpServletResponse response, Model model) {
         log.error(ex.getMessage());
+
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         model.addAttribute(ATTRIBUTE_NAME_ERROR, ex.getMessage());
         model.addAttribute(ATTRIBUTE_NAME_CODE, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

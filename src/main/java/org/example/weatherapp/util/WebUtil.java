@@ -30,7 +30,7 @@ public class WebUtil {
     public static void setSessionCookie(UUID sessionId, HttpServletResponse response) {
         Cookie cookie = new Cookie(SESSION_COOKIE_NAME, sessionId.toString());
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(ONE_HOUR_IN_SECONDS);
 
@@ -40,7 +40,7 @@ public class WebUtil {
     public static void deleteSessionCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie(SESSION_COOKIE_NAME, "");
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
         cookie.setMaxAge(0);
 
